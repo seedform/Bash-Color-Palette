@@ -95,10 +95,11 @@ if getopts ab:f: OPT; then
     a)  # display all colors
         disp
         ;;
-    *)  # display escape sequence
+    b|f)# display escape sequence
         if [[ $OPTARG =~ ^[0-9]+$ && $OPTARG -ge 0 ]]; then
             [[ $OPT == "b" ]] && bgc $OPTARG
             [[ $OPT == "f" ]] && fgc $OPTARG
+            exit
         else
             usage
         fi
