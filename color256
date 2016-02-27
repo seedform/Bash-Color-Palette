@@ -99,7 +99,7 @@ if getopts ab:f: OPT; then
         if [[ $OPTARG =~ ^[0-9]+$ && $OPTARG -ge 0 ]]; then
             [[ $OPT == "b" ]] && bgc $OPTARG
             [[ $OPT == "f" ]] && fgc $OPTARG
-            exit
+            exit 0
         else
             usage
         fi
