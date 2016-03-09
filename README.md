@@ -1,4 +1,4 @@
-# color256
+# Bash Color Palette
 A bash script to test and get escape sequences for 256 terminal colors.
 
 ![](https://raw.githubusercontent.com/seedform/color256/master/20160221144140.png)
