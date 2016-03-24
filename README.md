@@ -4,14 +4,14 @@ A bash script to test and get escape sequences for 256 terminal colors.
 ![](https://raw.githubusercontent.com/seedform/color256/master/20160221144140.png)
 
 ```
-$ git clone https://github.com/seedform/color256.git
-Cloning into 'color256'...
+$ git clone git@github.com:seedform/Bash-Color-Palette.git
+Cloning into 'Bash-Color-Palette'...
 remote: Counting objects: 15, done.
 remote: Compressing objects: 100% (13/13), done.
 remote: Total 15 (delta 2), reused 0 (delta 0), pack-reused 0
 Unpacking objects: 100% (15/15), done.
 Checking connectivity... done.
-$ cd color256
+$ cd Bash-Color-Palette
 $ chmod 755 color256    # remember to set read and execute permissions
 $ ./color256
 Usage: color256 [-a] [-b num] [-f num]
