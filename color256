@@ -6,20 +6,24 @@
 # A simple script to test and get escape sequences for 256 terminal colors.
 #
 
+
 NAME="${0##*/}"
 UNDER="\e[4m"
 RESET="\e[0m"
 TCOLS=$(tput cols)
 
+
 # prints foreground escape sequence
 fgc() {
-    echo "\e[38;5;${1}m"
+    printf "\e[38;5;%sm" "${1}"
 }
+
 
 # prints background escape sequence
 bgc() {
-    echo "\e[48;5;${1}m"
+    printf "\e[48;5;%sm" "${1}"
 }
+
 
 usage() {
     while IFS= read -r line; do
@@ -34,6 +38,7 @@ EOF
     exit 1
 }
 
+
 # displays all 256 colors
 disp() {
     local c # color code
@@ -42,7 +47,7 @@ disp() {
     echo "Basic (0 to 15):"
     for c in {0..15}; do
         # set the background color to its respective color code
-        echo -en "$(bgc $c)   $RESET"
+        echo -en "$(bgc "$c")   $RESET"
     done
     printf "\n\n"
 
@@ -50,44 +55,45 @@ disp() {
     echo "Greyscale (232 to 255):"
     for c in {232..255}; do
         # set the background color to its respective color code
-        echo -en "$(bgc $c)  $RESET"
+        echo -en "$(bgc "$c")  $RESET"
     done
     printf "\n\n"
 
     # show a chart of six 6x6 color palettes
     echo "6x6x6 Cubic Palette (16 to 231): "
     local colc=0                # column counter
-    local sixs=$(($TCOLS / 30)) # number of 6x6 palettes across screen
-    local cols=$(($sixs * 6))   # number of color columns (5 characters wide)
+    local sixs=$((TCOLS / 30))  # number of 6x6 palettes across screen
+    local cols=$((sixs * 6))    # number of color columns (5 characters wide)
     c=16                        # starting color code
  
-    while [[ $c -lt 232 ]]; do  # 16 to 231
+    while [[ "$c" -lt 232 ]]; do  # 16 to 231
 
         # set the background color to its respective color code
-        printf "$(bgc $c) %03d $RESET" "$c"
+        printf "$(bgc "$c") %03d $RESET" "$c"
 
-        # increment the color code and the 
+        # increment the color code and the column counter
         ((c++))
         ((colc++))
 
         # enter a new line if the terminal width has been reached
-        if [[ $colc -eq $cols ]]; then
+        if [[ "$colc" -ge "$cols" ]]; then
 
             # go back to the first set of 6x6 colors on this line if any left
-            if [[ $((($c - 16) % 36)) -ne 0 ]]; then
-                c=$(($c - ($sixs - 1) * 36))
+            if [[ $(((c - 16) % 36)) -ne 0 ]]; then
+                c=$((c - (sixs - 1) * 36))
             fi
 
             colc=0  # go back to the first column
             echo    # new line
 
         # go to the next set of 6x6 colors
-        elif [[ $(($colc % 6)) -eq 0 ]] && [[ $(($c + 30)) -lt 232 ]]; then
+        elif [[ $((colc % 6)) -eq 0 ]] && [[ $((c + 30)) -lt 232 ]]; then
             ((c+=30))
         fi        
     done
-    echo -e $RESET
+    echo -e "$RESET"
 }
+
 
 # process only one option
 if getopts ab:f: OPT; then
@@ -96,9 +102,9 @@ if getopts ab:f: OPT; then
         disp
         ;;
     b|f)# display escape sequence
-        if [[ $OPTARG =~ ^[0-9]+$ && $OPTARG -ge 0 ]]; then
-            [[ $OPT == "b" ]] && bgc $OPTARG
-            [[ $OPT == "f" ]] && fgc $OPTARG
+        if [[ "$OPTARG" =~ ^[0-9]+$ && "$OPTARG" -ge 0 ]]; then
+            [[ "$OPT" == "b" ]] && bgc "$OPTARG"
+            [[ "$OPT" == "f" ]] && fgc "$OPTARG"
             exit 0
         else
             usage
