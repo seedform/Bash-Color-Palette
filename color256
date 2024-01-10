@@ -29,12 +29,14 @@ fi
 
 # prints foreground escape sequence
 fgc() {
+    # shellcheck disable=SC2028
     echo "\e[38;5;${1}m"
 }
 
 
 # prints background escape sequence
 bgc() {
+    # shellcheck disable=SC2028
     echo "\e[48;5;${1}m"
 }
 
@@ -116,7 +118,7 @@ if getopts ab:f: OPT; then
         disp
         ;;
     b|f)# display escape sequence
-        if [[ "$OPTARG" =~ ^[0-9]+$ && "$OPTARG" -ge 0 ]]
+        if [[ "$OPTARG" =~ ^[0-9]+$ && "$OPTARG" -ge 0 && "$OPTARG" -le 255 ]]
         then
             [[ "$OPT" == "b" ]] && bgc "$OPTARG"
             [[ "$OPT" == "f" ]] && fgc "$OPTARG"
