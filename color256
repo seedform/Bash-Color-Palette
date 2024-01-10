@@ -10,18 +10,32 @@
 NAME="${0##*/}"
 UNDER="\e[4m"
 RESET="\e[0m"
-TCOLS=$(tput cols)
+TCOLS=$(tput cols)  # terminal width
+ECOLS="$TCOLS"      # effective width
+
+
+# chart display function can't handle a non-rectangular arrangement
+if [[ "$TCOLS" -ge 180 ]]
+then
+    ECOLS=180
+elif [[ "$TCOLS" -ge 90 ]]
+then
+    ECOLS=90
+elif [[ "$TCOLS" -lt 30 ]]
+then
+    ECOLS=30
+fi
 
 
 # prints foreground escape sequence
 fgc() {
-    printf "\e[38;5;%sm" "${1}"
+    echo "\e[38;5;${1}m"
 }
 
 
 # prints background escape sequence
 bgc() {
-    printf "\e[48;5;%sm" "${1}"
+    echo "\e[48;5;${1}m"
 }
 
 
@@ -62,7 +76,7 @@ disp() {
     # show a chart of six 6x6 color palettes
     echo "6x6x6 Cubic Palette (16 to 231): "
     local colc=0                # column counter
-    local sixs=$((TCOLS / 30))  # number of 6x6 palettes across screen
+    local sixs=$((ECOLS / 30))  # number of 6x6 palettes across screen
     local cols=$((sixs * 6))    # number of color columns (5 characters wide)
     c=16                        # starting color code
  
@@ -102,7 +116,8 @@ if getopts ab:f: OPT; then
         disp
         ;;
     b|f)# display escape sequence
-        if [[ "$OPTARG" =~ ^[0-9]+$ && "$OPTARG" -ge 0 ]]; then
+        if [[ "$OPTARG" =~ ^[0-9]+$ && "$OPTARG" -ge 0 ]]
+        then
             [[ "$OPT" == "b" ]] && bgc "$OPTARG"
             [[ "$OPT" == "f" ]] && fgc "$OPTARG"
             exit 0
